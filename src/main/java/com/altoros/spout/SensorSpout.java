@@ -48,7 +48,7 @@ public class SensorSpout extends BaseRichSpout {
     public void nextTuple() {
         try {
             Thread.sleep(10);
-            if(++count > NUMBER_OF_DATA) { return; }
+          //  if(++count > NUMBER_OF_DATA) { return; }
         } catch (InterruptedException e) {}
         Sensor sensor = getSensor();
         collector.emit(new Values(sensor));
