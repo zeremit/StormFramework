@@ -10,6 +10,8 @@ import com.altoros.spout.SensorGrouper;
 import com.altoros.spout.SensorSpout;
 import org.apache.commons.cli.*;
 
+import java.util.UUID;
+
 /**
  * Created by dmitry.khorevich on 13.2.14.
  */
@@ -17,29 +19,30 @@ public class Storm {
 
     static boolean runLocal = true;
 
+    static private int worker = 1;
+
+    static private boolean debug = false;
+
+    static private String name = "T1";
+
     public static void main( String[] args ) throws InterruptedException, ParseException {
 
         Options options = new Options();
-        Option option = new Option("worker", false, "Number of worker");
-        option.setRequired(false);
-        option.setArgs(1);
-        options.addOption(option);
-        Option optionName = new Option("name", false, "Topology name");
-        option.setArgs(1);
-        options.addOption(optionName);
+        options.addOption(OptionBuilder.withLongOpt("worker").hasArgs(1).isRequired(false).create());
+        options.addOption(OptionBuilder.withLongOpt("name").hasArgs(1).isRequired(false).create());
+        options.addOption(OptionBuilder.withLongOpt("local").hasArgs(1).isRequired(false).create());
+        options.addOption(OptionBuilder.withLongOpt("debug").hasArgs(1).isRequired(false).create());
         CommandLineParser cmdLinePosixParser = new PosixParser();// создаем Posix парсер
         CommandLine commandLine = cmdLinePosixParser.parse(options, args);
         if (commandLine.hasOption("worker")) { // проверяем, передавали ли нам команду l, сравнение будет идти с первым представлением опции, в нашем случаее это было однобуквенное представление l
-            String arguments = commandLine.getOptionValue("worker");// если такая опция есть, то получаем переданные ей аргументы
+            String arguments = commandLine.getOptionValue("worker", "1");// если такая опция есть, то получаем переданные ей аргументы
             System.out.println("Worker: " + arguments);// выводим переданный логин
         }
         if (commandLine.hasOption("name")) { // проверяем, передавали ли нам команду l, сравнение будет идти с первым представлением опции, в нашем случаее это было однобуквенное представление l
-            String arguments = commandLine.getOptionValue("name");// если такая опция есть, то получаем переданные ей аргументы
+            String arguments = commandLine.getOptionValue("name","T" + UUID.randomUUID());// если такая опция есть, то получаем переданные ей аргументы
             System.out.println("Topology name: " + arguments);// выводим переданный логин
         }
 
-        System.out.println("storm start");
-        System.out.println("\tName:" + "runLocal" + ", Value:" + System.getProperty("runLocal"));
         TopologyBuilder builder = new TopologyBuilder();
         builder.setSpout(SensorSpout.class.toString(), new SensorSpout());
 //        builder.setBolt(CountValuerBolt.class.toString(), new CountValuerBolt(), SensorSpout.TID).fieldsGrouping(SensorSpout.class.toString(), new Fields("tID"));
