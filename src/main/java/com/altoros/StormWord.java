@@ -19,7 +19,7 @@ public class StormWord {
     public static void main( String[] args ) throws InterruptedException {
         System.out.println("storm start");
         TopologyBuilder builder = new TopologyBuilder();
-        builder.setSpout("spot", new WordSpout());
+        builder.setSpout("spot", new WordSpout(), 4);
         builder.setBolt(WordCountBolt.class.toString(), new WordCountBolt(), 2).fieldsGrouping("spot", new Fields("word"));
         builder.setBolt(PrintWordCount.class.toString(), new PrintWordCount(), 2).shuffleGrouping(WordCountBolt.class.toString());
         //  builder.setBolt(CountValuerBolt.class.toString(), new CountValuerBolt(), SensorSpout.TID).customGrouping(SensorSpout.class.toString(), new SensorGrouper());
@@ -28,7 +28,7 @@ public class StormWord {
 
         Config config = new Config();
         config.setDebug(false);
-        // config.setNumWorkers(4);
+        config.setNumWorkers(6);
         //config.setNumWorkers(32);
 
         if(runLocal){

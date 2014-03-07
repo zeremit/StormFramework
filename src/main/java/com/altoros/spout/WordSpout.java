@@ -37,7 +37,7 @@ public class WordSpout extends BaseRichSpout{
         {
             String s = words[random.nextInt(words.length)];
             try {
-                Thread.sleep(200);
+                Thread.sleep(2000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
