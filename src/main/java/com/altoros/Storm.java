@@ -22,18 +22,20 @@ public class Storm {
         Options options = new Options();
         Option option = new Option("worker", false, "Number of worker");
         option.setRequired(false);
+        option.setArgs(1);
         options.addOption(option);
         Option optionName = new Option("name", false, "Topology name");
+        option.setArgs(1);
         options.addOption(optionName);
         CommandLineParser cmdLinePosixParser = new PosixParser();// создаем Posix парсер
         CommandLine commandLine = cmdLinePosixParser.parse(options, args);
         if (commandLine.hasOption("worker")) { // проверяем, передавали ли нам команду l, сравнение будет идти с первым представлением опции, в нашем случаее это было однобуквенное представление l
-            String[] arguments = commandLine.getOptionValues("worker");// если такая опция есть, то получаем переданные ей аргументы
-            System.out.println("Worker: " + arguments[0]);// выводим переданный логин
+            String arguments = commandLine.getOptionValue("worker");// если такая опция есть, то получаем переданные ей аргументы
+            System.out.println("Worker: " + arguments);// выводим переданный логин
         }
         if (commandLine.hasOption("name")) { // проверяем, передавали ли нам команду l, сравнение будет идти с первым представлением опции, в нашем случаее это было однобуквенное представление l
-            String[] arguments = commandLine.getOptionValues("name");// если такая опция есть, то получаем переданные ей аргументы
-            System.out.println("Topology name: " + arguments[0]);// выводим переданный логин
+            String arguments = commandLine.getOptionValue("name");// если такая опция есть, то получаем переданные ей аргументы
+            System.out.println("Topology name: " + arguments);// выводим переданный логин
         }
 
         System.out.println("storm start");
