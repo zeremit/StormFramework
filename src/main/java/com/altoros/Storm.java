@@ -3,7 +3,6 @@ package com.altoros;
 import backtype.storm.Config;
 import backtype.storm.LocalCluster;
 import backtype.storm.StormSubmitter;
-import backtype.storm.daemon.worker;
 import backtype.storm.topology.TopologyBuilder;
 import com.altoros.bolt.CountValueTestBolt;
 import com.altoros.spout.SensorGrouper;
@@ -17,7 +16,7 @@ import java.util.UUID;
  */
 public class Storm {
 
-    static boolean runLocal = true;
+    static boolean runOnCluster = true;
 
     static private int worker = 1;
 
@@ -30,7 +29,7 @@ public class Storm {
         Options options = new Options();
         options.addOption(OptionBuilder.withLongOpt("worker").hasArgs(1).isRequired(false).create());
         options.addOption(OptionBuilder.withLongOpt("name").hasArgs(1).isRequired(false).create());
-        options.addOption(OptionBuilder.withLongOpt("local").hasArgs(1).isRequired(false).create());
+        options.addOption(OptionBuilder.withLongOpt("cluster").hasArgs(1).isRequired(false).create());
         options.addOption(OptionBuilder.withLongOpt("debug").hasArgs(1).isRequired(false).create());
         CommandLineParser cmdLinePosixParser = new PosixParser();// создаем Posix парсер
         CommandLine commandLine = cmdLinePosixParser.parse(options, args);
@@ -41,6 +40,11 @@ public class Storm {
         if (commandLine.hasOption("name")) { // проверяем, передавали ли нам команду l, сравнение будет идти с первым представлением опции, в нашем случаее это было однобуквенное представление l
             String arguments = commandLine.getOptionValue("name","T" + UUID.randomUUID());// если такая опция есть, то получаем переданные ей аргументы
             System.out.println("Topology name: " + arguments);// выводим переданный логин
+        }
+        if (commandLine.hasOption("local")) { // проверяем, передавали ли нам команду l, сравнение будет идти с первым представлением опции, в нашем случаее это было однобуквенное представление l
+            String arguments = commandLine.getOptionValue("local",Boolean.TRUE.toString());// если такая опция есть, то получаем переданные ей аргументы
+            runOnCluster = Boolean.parseBoolean(arguments);
+            System.out.println("Run On Cluster: " + runOnCluster);// выводим переданный логин
         }
 
         TopologyBuilder builder = new TopologyBuilder();
@@ -55,7 +59,7 @@ public class Storm {
         config.setNumWorkers(2);
         //config.setNumWorkers(32);
 
-        if(runLocal){
+        if(!runOnCluster){
             LocalCluster cluster = new LocalCluster();
             cluster.submitTopology("T1", config, builder.createTopology());
             try { Thread.sleep(10000); } catch (InterruptedException ex) {}
