@@ -62,7 +62,7 @@ public class Storm {
         if(!runOnCluster){
             LocalCluster cluster = new LocalCluster();
             cluster.submitTopology("T1", config, builder.createTopology());
-            try { Thread.sleep(10000); } catch (InterruptedException ex) {}
+            try { Thread.sleep(10000); } catch (InterruptedException ex) {ex.printStackTrace();}
             cluster.shutdown();
        // Thread.sleep(1000 * 10);
         //cluster.shutdown();
